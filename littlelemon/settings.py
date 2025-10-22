@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r-%0eqcja86asp_+*1@3d6t9wm65$7^p*v^m961p@)w7*3ob0n'
+# SECRET_KEY = 'django-insecure-r-%0eqcja86asp_+*1@3d6t9wm65$7^p*v^m961p@)w7*3ob0n'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-local-secret-key')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
+
 
 
 # Application definition
@@ -76,15 +80,24 @@ WSGI_APPLICATION = 'littlelemon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# (DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'littlelemon_db',
+#        'USER': 'littlelemon_user',
+#        'PASSWORD': 'littlelemon',
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#    }
+#}'''
+
+
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'littlelemon_db',
-        'USER': 'littlelemon_user',
-        'PASSWORD': 'littlelemon',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgres://littlelemon_user:littlelemon@localhost:5432/littlelemon_db'
+    )
 }
 
 
@@ -126,10 +139,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 # The settings for static files have been updated for the Graded assessment
-STATIC_URL = 'restaurant/static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 STATICFILES_DIRS = [
-    "restaurant/static",
+    BASE_DIR / "restaurant" / "static",
 ]
 
 # Default primary key field type
