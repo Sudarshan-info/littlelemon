@@ -61,8 +61,7 @@ ROOT_URLCONF = 'littlelemon.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # The settings for templates updated for the Graded assessment
-        'DIRS': ['restaurant/templates' ],
+        'DIRS': [BASE_DIR / 'restaurant' / 'templates'],  # absolute path
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +73,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'littlelemon.wsgi.application'
 
