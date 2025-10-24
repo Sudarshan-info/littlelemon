@@ -1,5 +1,6 @@
 # from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from .forms import BookingForm
 from .models import Menu
 
@@ -18,6 +19,10 @@ def book(request):
         form = BookingForm(request.POST)
         if form.is_valid():
             form.save()
+            # Add success messgae
+            messages.success(request, "Your booking has been saved, see you soon!")
+             # Redirect to avoid resubmission on page refresh
+            return redirect('book')  # or the name of your booking page URL
     context = {'form':form}
     return render(request, 'book.html', context)
 
